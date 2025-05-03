@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->string('phone_number');
-            $table->string('address');
             $table->string('citizenship_image');
             $table->boolean('is_admin')->default(false);
             $table->timestamps();
