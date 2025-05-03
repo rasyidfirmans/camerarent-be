@@ -17,9 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');
-            $table->string('phone_number')->nullable();
-            $table->string('address')->nullable();
+            $table->string('phone_number');
+            $table->string('address');
             $table->string('citizenship_image');
+            $table->boolean('is_admin')->default(false);
             $table->timestamps();
         });
     }

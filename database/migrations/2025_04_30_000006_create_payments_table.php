@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('validated_by')->constrained(
-                table: 'admins',
+                table: 'users',
                 indexName: 'payments_admin_id'
             )->onDelete('cascade');
             $table->date('payment_date');
