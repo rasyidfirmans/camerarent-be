@@ -79,6 +79,15 @@ class AuthController extends Controller
 
     public function logout(Request $request) {
         $user = $request->user();
+        $token = $request->user()->currentAccessToken();
+
+        if (!$token || !in_array('access-token', $token->abilities)) {
+            return response()->json([
+                'code' => 403,
+                'message' => 'Token does not have the required ability.',
+            ], 403);
+        }
+        
         if ($user) {
             $user->tokens()->delete();
             return response()->json([
