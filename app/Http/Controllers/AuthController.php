@@ -23,9 +23,9 @@ class AuthController extends Controller
         $validated['password'] = hash('sha256', $validated['password']);
         $uploadFolder = 'storage/images/ctz/';
         $image = $request->file('citizenship_image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
+        $imageName = bin2hex(random_bytes(10)) . '.' . $image->getClientOriginalExtension();
         $image->move($uploadFolder, $imageName);
-        $validated['citizenship_image'] = 'images/citizenship/' . $imageName;
+        $validated['citizenship_image'] = $uploadFolder . $imageName;
 
         $user = User::create([
             'name' => $validated['name'],
