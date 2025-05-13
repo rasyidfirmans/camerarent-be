@@ -61,23 +61,24 @@ class ProductController extends Controller implements HasMiddleware
             ['category_name' => $validated['category']]
         );
 
-        $uploadFolder = 'storage/images/products/';
-        $image = $request->file('product_image');
-        $imageName = bin2hex(random_bytes(5));
-        $image->move($uploadFolder, $imageName);
-        $validated['product_image'] = $uploadFolder . $imageName;
+        $product = \App\Models\Product::where('name', $validated['name'])->first();
 
-        $product = \App\Models\Product::firstOrCreate(
-            ['name' => $validated['name']],
-            [
-                'name' => $validated['name'],
-                'description' => $validated['description'],
-                'price' => $validated['price'],
-                'stock' => $validated['stock'],
-                'category_id' => $category->id,
-                'image' => $validated['product_image'],
-            ]
-        );
+        if (!$product) {
+            $uploadFolder = 'storage/images/products/';
+            $image = $request->file('product_image');
+            $imageName = bin2hex(random_bytes(10)) . '.' . $image->getClientOriginalExtension();
+            $image->move($uploadFolder, $imageName);
+            $validated['product_image'] = $uploadFolder . $imageName;
+
+            $product = \App\Models\Product::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'stock' => $validated['stock'],
+            'category_id' => $category->id,
+            'image' => $validated['product_image'],
+            ]);
+        }
 
         return response()->json([
             'status' => true,
