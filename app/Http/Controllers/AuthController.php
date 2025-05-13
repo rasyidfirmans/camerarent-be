@@ -12,50 +12,53 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'username' => 'required|string|max:255|unique:users',
-            'phone_number' => 'required|string|min:8|max:255',
+            'username' => 'required|string|min:5|max:255|unique:users',
+            'phone_number' => 'required|string|min:8|max:15',
             'citizenship_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'email.unique' => 'Email already exists. Please log in using this email instead.',
+            'username.unique' => 'Username already exists. Please log in using this username instead.',
         ]);
 
         $validated['password'] = hash('sha256', $validated['password']);
         $uploadFolder = 'storage/images/ctz/';
         $image = $request->file('citizenship_image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
+        $imageName = bin2hex(random_bytes(10)) . '.' . $image->getClientOriginalExtension();
         $image->move($uploadFolder, $imageName);
-        $validated['citizenship_image'] = 'images/citizenship/' . $imageName;
+        $validated['citizenship_image'] = $uploadFolder . $imageName;
 
-        $user = \App\Models\User::create($validated);
-
-        $at_expiration = now()->addMinutes(60);
-        $access_token = $user->createToken('access_token', ['access-token'], $at_expiration)->plainTextToken;
-        $rt_expiration = now()->addDays(30);
-        $refresh_token = $user->createToken('refresh_token', ['refresh-token'], $rt_expiration)->plainTextToken;
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'username' => $validated['username'],
+            'phone_number' => $validated['phone_number'],
+            'citizenship_image' => $validated['citizenship_image'],
+        ]);
 
         return response()->json([
             'code' => 201,
             'message' => 'User registered successfully',
-            'access_token' => $access_token,
-            'refresh_token' => $refresh_token
         ], 201);
     }
 
     public function login(Request $request) {
         $validated = $request->validate([
             'username' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string',
         ]);
 
         $user = User::where('username', $validated['username'])->first();
         if (!$user) {
             return response()->json([
                 'code' => 404,
-                'message' => 'User not found',
+                'message' => 'Invalid username or password',
             ], 404);
         }
         if ($user && hash('sha256', $validated['password']) !== $user->password) {
             return response()->json([
                 'code' => 401,
-                'message' => 'Invalid credentials',
+                'message' => 'Invalid username or password',
             ], 401);
         }
 
@@ -79,6 +82,15 @@ class AuthController extends Controller
 
     public function logout(Request $request) {
         $user = $request->user();
+        $token = $request->user()->currentAccessToken();
+
+        if (!$token || !in_array('access-token', $token->abilities)) {
+            return response()->json([
+                'code' => 403,
+                'message' => 'Token does not have the required ability.',
+            ], 403);
+        }
+        
         if ($user) {
             $user->tokens()->delete();
             return response()->json([
