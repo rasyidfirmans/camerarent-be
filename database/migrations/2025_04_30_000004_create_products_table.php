@@ -18,9 +18,10 @@ return new class extends Migration
                 indexName: 'products_category_id'
             )->onDelete('cascade');
             $table->string('name');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->decimal('price', 10, 2);
-            $table->integer('stock')->default(0);
+            $table->integer('stock')->default(1);
+            $table->string('image');
             $table->timestamps();
         });
     }
