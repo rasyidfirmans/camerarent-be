@@ -25,7 +25,8 @@ class ProductFactory extends Factory
             'description' => fake()->paragraph(),
             'category_id' => Category::factory(),
             'price' => fake()->randomNumber(5, true),
-            'stock' => fake()->randomNumber(1, true)
+            'stock' => fake()->randomNumber(1, true),
+            'image' => 'storage/images/products/Nikon Z50II.png',
         ];
     }
 }

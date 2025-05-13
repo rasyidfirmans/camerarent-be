@@ -14,10 +14,10 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->insert([
-            'name' => fake()->name(),
+            'name' => 'Robby Cantik',
             'email' => fake()->email(),
-            'username' => fake()->userName(),
-            'password' => hash('sha256', 'adminganteng256'),
+            'username' => 'RobbyCantik',
+            'password' => hash('sha256', 'admincantik256'),
             'phone_number' => fake()->phoneNumber(),
             'citizenship_image' => fake()->image(),
             'is_admin' => true,
