@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Testing\Fluent\Concerns\Has;
 use Laravel\Sanctum\HasApiTokens;
 
 class Product extends Model
@@ -36,5 +35,10 @@ class Product extends Model
     {
         return $this->belongsToMany(Transaction::class)
             ->withPivot('quantity', 'start_date', 'end_date');
+    }
+
+    public function carts(): BelongsToMany
+    {
+        return $this->belongsToMany(Cart::class);
     }
 }
