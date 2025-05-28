@@ -1,7 +1,9 @@
 <?php
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\ProductController;
@@ -18,3 +20,7 @@ Route::apiResource('products', ProductController::class);
 
 Route::get('/user/refresh', [TokenController::class, 'refresh'])->middleware(['auth:sanctum', 'abilities:refresh-token']);
 Route::get('/user', [UserController::class, 'getCurrentUser'])->middleware(['auth:sanctum', 'abilities:access-token']);
+
+Route::apiResource('cart', CartController::class)->except('update');
+Route::put('/cart', [CartController::class, 'update']);
+Route::delete('/cart', [CartController::class, 'destroy']);
