@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -42,7 +43,8 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $validated = $request->validate([
             'username' => 'required|string|max:255',
             'password' => 'required|string',
@@ -80,7 +82,9 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function logout(Request $request) {
+    // TODO: Automatically create cart when user login
+    public function logout(Request $request)
+    {
         $user = $request->user();
         $token = $request->user()->currentAccessToken();
 
@@ -90,7 +94,7 @@ class AuthController extends Controller
                 'message' => 'Token does not have the required ability.',
             ], 403);
         }
-        
+
         if ($user) {
             $user->tokens()->delete();
             return response()->json([
@@ -100,5 +104,3 @@ class AuthController extends Controller
         }
     }
 }
-
-

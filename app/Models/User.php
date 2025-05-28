@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -21,4 +22,9 @@ class User extends Authenticatable
         'phone_number',
         'citizenship_image',
     ];
+
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class);
+    }
 }
