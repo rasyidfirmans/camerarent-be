@@ -17,13 +17,13 @@ return new class extends Migration
                 table: 'users',
                 indexName: 'transactions_user_id'
             )->onDelete('cascade');
-            $table->foreignId('lent_book_id')->constrained(
-                table: 'products',
-                indexName: 'transactions_book_id'
-            )->onDelete('cascade'); 
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->decimal('amount', 10, 2);
+            $table->foreignId('validated_by')->nullable()->constrained(
+                table: 'users',
+                indexName: 'transactions_admin_id'
+            )->onDelete('cascade');
+            $table->string('delivery');
+            $table->string('notes')->nullable();
+            $table->string('payment_proof');
             $table->string('status')->default('pending');
             $table->timestamps();
         });

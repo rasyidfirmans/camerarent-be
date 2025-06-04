@@ -32,8 +32,9 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function carts(): BelongsToMany
+    public function transactions(): BelongsToMany
     {
-        return $this->belongsToMany(Cart::class);
+        return $this->belongsToMany(Transaction::class)
+            ->withPivot('quantity', 'start_date', 'end_date');
     }
 }

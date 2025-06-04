@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TransactionController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -24,3 +26,5 @@ Route::get('/user', [UserController::class, 'getCurrentUser'])->middleware(['aut
 Route::apiResource('cart', CartController::class)->except('update');
 Route::put('/cart', [CartController::class, 'update']);
 Route::delete('/cart', [CartController::class, 'destroy']);
+
+Route::apiResource('transaction', TransactionController::class);
