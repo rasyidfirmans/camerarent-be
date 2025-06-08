@@ -157,8 +157,6 @@ class CartController extends Controller implements HasMiddleware
         $validated = $request->validate([
             'id' => 'required|integer',
             'quantity' => 'required|integer',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
         ]);
 
         $cart = Cart::where('user_id', $request->user()->id)->first();
@@ -168,12 +166,6 @@ class CartController extends Controller implements HasMiddleware
         if ($rental_item->exists()) {
             $rental_item = $rental_item->update([
                 'quantity' => $validated['quantity'],
-                'start_date' => $validated['start_date'],
-                'end_date' => $validated['end_date'],
-                'date_diff' => date_diff(
-                    date_create($validated['start_date']),
-                    date_create($validated['end_date'])
-                )->days,
             ]);
         } else {
             return response()->json([
