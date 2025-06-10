@@ -26,5 +26,6 @@ Route::get('/user', [UserController::class, 'getCurrentUser'])->middleware(['aut
 Route::apiResource('cart', CartController::class)->except('update');
 Route::put('/cart', [CartController::class, 'update']);
 Route::delete('/cart', [CartController::class, 'destroy']);
+Route::delete('/clear-cart', [CartController::class, 'clearCart']);
 
 Route::apiResource('transaction', TransactionController::class);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -35,6 +36,10 @@ class AuthController extends Controller
             'username' => $validated['username'],
             'phone_number' => $validated['phone_number'],
             'citizenship_image' => $validated['citizenship_image'],
+        ]);
+
+        Cart::create([
+            'user_id' => $user->id,
         ]);
 
         return response()->json([
@@ -82,7 +87,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // TODO: Automatically create cart when user login
     public function logout(Request $request)
     {
         $user = $request->user();

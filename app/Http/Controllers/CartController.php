@@ -228,4 +228,21 @@ class CartController extends Controller implements HasMiddleware
             'message' => 'Product deleted successfully',
         ]);
     }
+
+    public function clearCart(Request $request)
+    {
+        $cart = Cart::where('user_id', $request->user()->id)->first();
+        if ($cart) {
+            $cart->products()->detach();
+            return response()->json([
+                'code' => 200,
+                'message' => 'Cart cleared successfully',
+            ]);
+        } else {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Cart not found',
+            ], 404);
+        }
+    }
 }
