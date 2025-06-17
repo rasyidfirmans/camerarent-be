@@ -15,7 +15,18 @@ class Transaction extends Model
         'notes',
         'payment_proof',
         'status',
+        'invoice_id',
     ];
+
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d M Y H:i');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d M Y H:i');
+    }
 
     public function user(): BelongsTo
     {
@@ -26,5 +37,19 @@ class Transaction extends Model
     {
         return $this->belongsToMany(Product::class, 'product_transaction')
             ->withPivot('quantity', 'start_date', 'end_date');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($transaction) {
+            $transaction->invoice_id = 'INV-' . str_pad(
+                Transaction::max('id') + 1,
+                6,
+                '0',
+                STR_PAD_LEFT
+            ) . '-' . now()->format('Ymd');
+        });
     }
 }

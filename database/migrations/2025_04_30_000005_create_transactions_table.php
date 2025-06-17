@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->string('payment_proof');
             $table->string('status')->default('pending');
+            $table->string('invoice_id')->unique();
             $table->timestamps();
         });
     }
