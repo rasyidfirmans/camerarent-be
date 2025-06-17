@@ -84,6 +84,7 @@ class AuthController extends Controller
             'message' => 'User logged in successfully',
             'access_token' => $access_token,
             'refresh_token' => $refresh_token,
+            'role' => $user->is_admin ? 'admin' : 'user',
         ], 200);
     }
 
