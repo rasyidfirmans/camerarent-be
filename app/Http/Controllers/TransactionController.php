@@ -22,7 +22,7 @@ class TransactionController extends Controller implements HasMiddleware
             ),
             new Middleware(
                 ['auth:sanctum', 'abilities:access-token,access-admin'],
-                ['update']
+                ['update', 'getAllTransactions']
             )
         ];
     }
@@ -133,5 +133,48 @@ class TransactionController extends Controller implements HasMiddleware
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getAllTransactions()
+    {
+        $transactions = Transaction::with(['user', 'products.category'])
+            ->get()
+            ->map(function ($transaction) {
+                $transaction->products->map(function ($product) {
+                    $category_name = $product->category->category_name;
+                    unset($product->category);
+                    $product->category = $category_name;
+                    unset($product->category_id);
+                    unset($product->created_at);
+                    unset($product->updated_at);
+
+                    if (isset($product->pivot)) {
+                        $product->quantity = $product->pivot->quantity;
+                        $product->start_date = $product->pivot->start_date;
+                        $product->end_date = $product->pivot->end_date;
+                        unset($product->pivot);
+                    }
+
+                    $product->subtotal = $product->price * $product->quantity;
+
+                    return $product;
+                });
+
+                unset($transaction->user->id);
+                unset($transaction->user->username);
+                unset($transaction->user->password);
+                unset($transaction->user->citizenship_image);
+                unset($transaction->user->created_at);
+                unset($transaction->user->updated_at);
+                unset($transaction->user->is_admin);
+                $transaction->total_price = $transaction->products->sum('subtotal');
+                return $transaction;
+            });
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'All transactions retrieved successfully',
+            'data' => $transactions,
+        ]);
     }
 }

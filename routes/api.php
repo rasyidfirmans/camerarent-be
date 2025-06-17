@@ -29,3 +29,4 @@ Route::delete('/cart', [CartController::class, 'destroy']);
 Route::delete('/clear-cart', [CartController::class, 'clearCart']);
 
 Route::apiResource('transaction', TransactionController::class);
+Route::get('/admin/transaction', [TransactionController::class, 'getAllTransactions']);
